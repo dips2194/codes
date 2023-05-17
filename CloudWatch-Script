@@ -1,0 +1,33 @@
+import boto3
+
+# Get the CloudWatch client
+cloudwatch = boto3.client('cloudwatch')
+
+# Get the EC2 instance ID
+instance_id = 'i-000000000000'
+
+# Create the alarm
+alarm_name = 'CPU_Utilization_Alarm'
+alarm_description = 'Alarm when CPU usage exceeds 80%'
+alarm_threshold = 80
+alarm_period = 60
+alarm_evaluation_periods = 5
+
+cloudwatch.put_metric_alarm(
+  AlarmName=alarm_name,
+  ComparisonOperator='GreaterThanThreshold',
+  Threshold=alarm_threshold,
+  EvaluationPeriods=alarm_evaluation_periods,
+  MetricName='CPUUtilization',
+  Namespace='AWS/EC2',
+  Period=alarm_period,
+  AlarmDescription=alarm_description,
+  Dimensions=[
+    {
+      'Name': 'InstanceId',
+      'Value': instance_id
+    }
+  ]
+)
+
+print('Alarm created successfully')
